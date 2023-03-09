@@ -8,7 +8,9 @@ import Data.Aeson.Key qualified as Key
 import Data.Aeson.KeyMap qualified as KM
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
+import Data.Char (isUpper, toLower)
 import Data.Kind
+import Data.List (foldl')
 import Data.Map qualified as M
 import Data.Maybe
 import Data.Text (Text)
@@ -71,7 +73,7 @@ jsonOptions =
         }
 
 toSnakeCase :: String -> String
-toSnakeCase = id
+toSnakeCase = foldl' (\b a -> b <> if isUpper a then '_' : [toLower a] else [a]) ""
 
 instance ToJSON FirebaseUser where
     toJSON = genericToJSON jsonOptions

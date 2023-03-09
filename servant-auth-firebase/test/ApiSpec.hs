@@ -31,6 +31,9 @@ app authSettings =
         (authSettings :. EmptyContext)
         server
 
+{- | Start a server that can be queried with
+ `curl localhost:7878 -H "Authorization: Bearer .."`
+-}
 runApp :: IO ()
 runApp = do
     authSettings <- mkFirebaseVerificationSettings "sweq-378105"

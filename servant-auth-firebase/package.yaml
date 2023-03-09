@@ -15,6 +15,7 @@ dependencies:
 - aeson
 - containers
 - servant-server
+- servant-auth-server
 - text
 - microlens
 - wai

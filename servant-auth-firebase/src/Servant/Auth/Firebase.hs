@@ -1,4 +1,7 @@
-module Servant.Auth.Firebase where
+module Servant.Auth.Firebase (
+    module Servant.Auth.Firebase,
+    ThrowAll (..),
+) where
 
 import Control.Monad.Except
 import Control.Monad.Time (MonadTime (..))
@@ -21,6 +24,7 @@ import Lens.Micro
 import Network.HTTP.Types
 import Network.Wai qualified as Wai
 import Servant
+import Servant.Auth.Server (ThrowAll (..))
 import Servant.Server.Internal.Delayed (Delayed (..), addAuthCheck)
 import Servant.Server.Internal.DelayedIO (DelayedIO, withRequest)
 import Servant.Server.Internal.Router (Router)
@@ -134,10 +138,10 @@ checkFirebaseToken ::
     FirebaseSettings ->
     BS.ByteString ->
     m (FirebaseAuthResult user)
-checkFirebaseToken settings tok = do
+checkFirebaseToken FirebaseSettings{jwkSet, validationSettings} tok = do
     verificationResult <- runExceptT $ do
         jwt <- JWT.decodeCompact $ BL.fromStrict tok
-        JWT.verifyClaims (validationSettings settings) (jwkSet settings) jwt
+        JWT.verifyClaims validationSettings jwkSet jwt
     case verificationResult of
         Right claims -> do
             let object :: Value

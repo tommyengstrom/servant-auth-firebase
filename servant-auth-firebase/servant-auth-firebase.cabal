@@ -23,11 +23,14 @@ library
       ImportQualifiedPost InstanceSigs DataKinds DefaultSignatures DeriveAnyClass DeriveFoldable DeriveFunctor DeriveGeneric DeriveTraversable DerivingStrategies DerivingVia DuplicateRecordFields FlexibleContexts FlexibleInstances FunctionalDependencies GADTs GeneralizedNewtypeDeriving LambdaCase MultiParamTypeClasses NoImplicitPrelude NamedFieldPuns OverloadedLabels OverloadedStrings RankNTypes ScopedTypeVariables StandaloneDeriving TupleSections TypeApplications TypeFamilies TypeOperators ViewPatterns
   ghc-options: -Werror -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wincomplete-record-updates -Wincomplete-patterns
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
     , bytestring
+    , containers
     , firebase-jwk
     , http-types
     , jose
+    , microlens
     , monad-time
     , mtl
     , servant
@@ -50,12 +53,15 @@ test-suite servant-auth-firebase-test
       ImportQualifiedPost InstanceSigs DataKinds DefaultSignatures DeriveAnyClass DeriveFoldable DeriveFunctor DeriveGeneric DeriveTraversable DerivingStrategies DerivingVia DuplicateRecordFields FlexibleContexts FlexibleInstances FunctionalDependencies GADTs GeneralizedNewtypeDeriving LambdaCase MultiParamTypeClasses NoImplicitPrelude NamedFieldPuns OverloadedLabels OverloadedStrings RankNTypes ScopedTypeVariables StandaloneDeriving TupleSections TypeApplications TypeFamilies TypeOperators ViewPatterns
   ghc-options: -Werror -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wincomplete-record-updates -Wincomplete-patterns -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
     , bytestring
+    , containers
     , firebase-jwk
     , hspec
     , http-types
     , jose
+    , microlens
     , monad-time
     , mtl
     , servant

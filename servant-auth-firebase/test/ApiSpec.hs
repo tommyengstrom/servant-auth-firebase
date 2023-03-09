@@ -17,7 +17,7 @@ import Prelude
 
 type Api = Get '[JSON] String
 
-type ProtectedApi = FirebaseAuth :> Api
+type ProtectedApi = FirebaseAuth FirebaseUser :> Api
 
 server :: Server ProtectedApi
 server = \case
@@ -55,11 +55,11 @@ spec :: Spec
 spec = describe "veirfyFirebaseJWT" $ do
     it "Accepts my old token at the right time" $ do
         authSettings <- mkFirebaseVerificationSettings "sweq-378105"
-        r <- runTestAt sampleTokenTime $ checkFirebaseToken authSettings sampleToken
+        r <- runTestAt sampleTokenTime $ checkFirebaseToken @FirebaseUser authSettings sampleToken
         r `shouldSatisfy` \case
             Authenticated _ -> True
             AuthenticationFailure _ -> False
     it "My old token has now expired" $ do
         authSettings <- mkFirebaseVerificationSettings "sweq-378105"
-        r <- checkFirebaseToken authSettings sampleToken
+        r <- checkFirebaseToken @FirebaseUser authSettings sampleToken
         r `shouldBe` AuthenticationFailure "Token has expired"

@@ -12,8 +12,11 @@ dependencies:
 - firebase-jwk
 - http-types
 - servant
+- aeson
+- containers
 - servant-server
 - text
+- microlens
 - wai
 - time
 - warp

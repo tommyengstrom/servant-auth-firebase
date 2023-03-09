@@ -3,14 +3,19 @@ module Servant.Auth.Firebase where
 import Control.Monad.Except
 import Control.Monad.Time (MonadTime (..))
 import Crypto.JWT qualified as JWT
+import Data.Aeson
+import Data.Aeson.Key qualified as Key
+import Data.Aeson.KeyMap qualified as KM
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
 import Data.Kind
+import Data.Map qualified as M
 import Data.Maybe
 import Data.Text (Text)
 import Data.Text qualified as T
 import Firebase.JWK.Store qualified as FB
-import GHC.Generics
+import GHC.Generics (Generic)
+import Lens.Micro
 import Network.HTTP.Types
 import Network.Wai qualified as Wai
 import Servant
@@ -36,8 +41,20 @@ mkFirebaseVerificationSettings projectId = do
             , validationSettings = JWT.defaultJWTValidationSettings (== projectId)
             }
 
-data FirebaseAuth
+data FirebaseAuth (user :: Type)
 data FirebaseJWT
+
+data VerifiedClaims a = VerifiedClaims
+    { iss :: Maybe JWT.StringOrURI
+    , sub :: Maybe JWT.StringOrURI
+    , aud :: Maybe JWT.Audience
+    , exp :: Maybe JWT.NumericDate
+    , nbf :: Maybe JWT.NumericDate
+    , iat :: Maybe JWT.NumericDate
+    , jti :: Maybe T.Text
+    , content :: a
+    }
+    deriving (Show, Eq, Generic)
 
 data FirebaseUser = FirebaseUser
     { name :: Text
@@ -47,42 +64,57 @@ data FirebaseUser = FirebaseUser
     }
     deriving (Show, Eq, Generic)
 
-data FirebaseAuthResult
-    = Authenticated FirebaseUser
+jsonOptions :: Options
+jsonOptions =
+    defaultOptions
+        { fieldLabelModifier = toSnakeCase
+        }
+
+toSnakeCase :: String -> String
+toSnakeCase = id
+
+instance ToJSON FirebaseUser where
+    toJSON = genericToJSON jsonOptions
+instance FromJSON FirebaseUser where
+    parseJSON = genericParseJSON jsonOptions
+
+data FirebaseAuthResult user
+    = Authenticated user
     | AuthenticationFailure Text
     deriving (Show, Eq, Generic)
 
 instance
     ( HasServer api ctx
+    , FromJSON user
     , HasContextEntry ctx FirebaseSettings
-    )
-    => HasServer (FirebaseAuth :> api) ctx
+    ) =>
+    HasServer (FirebaseAuth user :> api) ctx
     where
-    type ServerT (FirebaseAuth :> api) m = FirebaseAuthResult -> ServerT api m
+    type ServerT (FirebaseAuth user :> api) m = FirebaseAuthResult user -> ServerT api m
 
-    hoistServerWithContext
-        :: forall (m :: Type -> Type) (n :: Type -> Type)
-         . Proxy (FirebaseAuth :> api)
-        -> Proxy ctx
-        -> (forall x. m x -> n x)
-        -> (FirebaseAuthResult -> ServerT api m)
-        -> FirebaseAuthResult
-        -> ServerT api n
+    hoistServerWithContext ::
+        forall (m :: Type -> Type) (n :: Type -> Type).
+        Proxy (FirebaseAuth user :> api) ->
+        Proxy ctx ->
+        (forall x. m x -> n x) ->
+        (FirebaseAuthResult user -> ServerT api m) ->
+        FirebaseAuthResult user ->
+        ServerT api n
     hoistServerWithContext _ pc nt s = hoistServerWithContext (Proxy @api) pc nt . s
 
-    route
-        :: forall env
-         . Proxy (FirebaseAuth :> api)
-        -> Context ctx
-        -> Delayed env (FirebaseAuthResult -> Server api)
-        -> Router env
+    route ::
+        forall env.
+        Proxy (FirebaseAuth user :> api) ->
+        Context ctx ->
+        Delayed env (FirebaseAuthResult user -> Server api) ->
+        Router env
     route _ ctx subserver =
         route
             (Proxy @api)
             ctx
             (subserver `addAuthCheck` authCheck)
       where
-        authCheck :: DelayedIO FirebaseAuthResult
+        authCheck :: DelayedIO (FirebaseAuthResult user)
         authCheck = withRequest $ \req -> liftIO $ do
             case getAuthorizationToken $ Wai.requestHeaders req of
                 Nothing ->
@@ -92,18 +124,34 @@ instance
                     user <- checkFirebaseToken (getContextEntry ctx) token
                     pure user
 
-checkFirebaseToken
-    :: MonadTime m
-    => FirebaseSettings
-    -> BS.ByteString
-    -> m FirebaseAuthResult
+checkFirebaseToken ::
+    forall user m.
+    ( FromJSON user
+    , MonadTime m
+    ) =>
+    FirebaseSettings ->
+    BS.ByteString ->
+    m (FirebaseAuthResult user)
 checkFirebaseToken settings tok = do
     verificationResult <- runExceptT $ do
         jwt <- JWT.decodeCompact $ BL.fromStrict tok
         JWT.verifyClaims (validationSettings settings) (jwkSet settings) jwt
-    pure $ case verificationResult of
-        Right claims -> Authenticated (FirebaseUser $ show claims)
-        Left err' -> case err' of
+    case verificationResult of
+        Right claims -> do
+            let object :: Value
+                object =
+                    claims
+                        ^. JWT.unregisteredClaims
+                            . to (M.mapKeys (Key.fromText))
+                            . to (KM.fromMap)
+                            . to Object
+            pure $ case fromJSON object of
+                Success u -> Authenticated u
+                Error err ->
+                    AuthenticationFailure $
+                        "Error decoding verified claims: "
+                            <> T.pack err
+        Left err' -> pure $ case err' of
             JWT.JWSError err -> AuthenticationFailure . T.pack $ show err
             JWT.JWTClaimsSetDecodeError err ->
                 AuthenticationFailure $ "JWTClaimsSetDecodeError: " <> T.pack err

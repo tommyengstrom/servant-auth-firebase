@@ -1,7 +1,7 @@
-module Servant.Auth.Firebase (
-    module Servant.Auth.Firebase,
-    ThrowAll (..),
-) where
+module Servant.Auth.Firebase
+    ( module Servant.Auth.Firebase
+    , ThrowAll (..)
+    ) where
 
 import Control.Monad.Except
 import Control.Monad.Time (MonadTime (..))
@@ -93,27 +93,27 @@ instance
     ( HasServer api ctx
     , FromJSON user
     , HasContextEntry ctx FirebaseSettings
-    ) =>
-    HasServer (FirebaseAuth user :> api) ctx
+    )
+    => HasServer (FirebaseAuth user :> api) ctx
     where
     type ServerT (FirebaseAuth user :> api) m = FirebaseAuthResult user -> ServerT api m
 
-    hoistServerWithContext ::
-        forall (m :: Type -> Type) (n :: Type -> Type).
-        Proxy (FirebaseAuth user :> api) ->
-        Proxy ctx ->
-        (forall x. m x -> n x) ->
-        (FirebaseAuthResult user -> ServerT api m) ->
-        FirebaseAuthResult user ->
-        ServerT api n
+    hoistServerWithContext
+        :: forall (m :: Type -> Type) (n :: Type -> Type)
+         . Proxy (FirebaseAuth user :> api)
+        -> Proxy ctx
+        -> (forall x. m x -> n x)
+        -> (FirebaseAuthResult user -> ServerT api m)
+        -> FirebaseAuthResult user
+        -> ServerT api n
     hoistServerWithContext _ pc nt s = hoistServerWithContext (Proxy @api) pc nt . s
 
-    route ::
-        forall env.
-        Proxy (FirebaseAuth user :> api) ->
-        Context ctx ->
-        Delayed env (FirebaseAuthResult user -> Server api) ->
-        Router env
+    route
+        :: forall env
+         . Proxy (FirebaseAuth user :> api)
+        -> Context ctx
+        -> Delayed env (FirebaseAuthResult user -> Server api)
+        -> Router env
     route _ ctx subserver =
         route
             (Proxy @api)
@@ -127,17 +127,16 @@ instance
                     pure $
                         AuthenticationFailure "No bearer token found in `Authorization` header"
                 Just token -> do
-                    user <- checkFirebaseToken (getContextEntry ctx) token
-                    pure user
+                    checkFirebaseToken (getContextEntry ctx) token
 
-checkFirebaseToken ::
-    forall user m.
-    ( FromJSON user
-    , MonadTime m
-    ) =>
-    FirebaseSettings ->
-    BS.ByteString ->
-    m (FirebaseAuthResult user)
+checkFirebaseToken
+    :: forall user m
+     . ( FromJSON user
+       , MonadTime m
+       )
+    => FirebaseSettings
+    -> BS.ByteString
+    -> m (FirebaseAuthResult user)
 checkFirebaseToken FirebaseSettings{jwkSet, validationSettings} tok = do
     verificationResult <- runExceptT $ do
         jwt <- JWT.decodeCompact $ BL.fromStrict tok
@@ -148,8 +147,8 @@ checkFirebaseToken FirebaseSettings{jwkSet, validationSettings} tok = do
                 object =
                     claims
                         ^. JWT.unregisteredClaims
-                            . to (M.mapKeys (Key.fromText))
-                            . to (KM.fromMap)
+                            . to (M.mapKeys Key.fromText)
+                            . to KM.fromMap
                             . to Object
             pure $ case fromJSON object of
                 Success u -> Authenticated u

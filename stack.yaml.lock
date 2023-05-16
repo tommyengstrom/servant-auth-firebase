@@ -3,7 +3,18 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    commit: 99d905fc594f97f3ed620434a2994c54387f2ac7
+    git: https://github.com/tommyengstrom/firebase-jwk.git
+    name: firebase-jwk
+    pantry-tree:
+      sha256: 9f064d6b7ea68b75dbef8cb4bdca1f48f2ad6efdeffa52e7a636edf36e5fd8bc
+      size: 1554
+    version: 0.1.3.0
+  original:
+    commit: 99d905fc594f97f3ed620434a2994c54387f2ac7
+    git: https://github.com/tommyengstrom/firebase-jwk.git
 snapshots:
 - completed:
     sha256: 9fa4bece7acfac1fc7930c5d6e24606004b09e80aa0e52e9f68b148201008db9

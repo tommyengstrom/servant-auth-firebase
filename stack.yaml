@@ -4,4 +4,4 @@ packages:
 
 extra-deps:
   - git: https://github.com/tommyengstrom/firebase-jwk.git
-    commit: f5eb04d0900ff5621fcd1710e5e5ac0ea45c161a
+    commit: 99d905fc594f97f3ed620434a2994c54387f2ac7

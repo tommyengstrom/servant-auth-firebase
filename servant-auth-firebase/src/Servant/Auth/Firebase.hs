@@ -89,6 +89,9 @@ data FirebaseAuthResult user
     | AuthenticationFailure Text
     deriving (Show, Eq, Generic)
 
+instance ThrowAll (FirebaseAuthResult user) where
+    throwAll = AuthenticationFailure . T.pack . show
+
 instance
     ( HasServer api ctx
     , FromJSON user

@@ -29,12 +29,15 @@ library
     , containers
     , firebase-jwk
     , http-types
+    , insert-ordered-containers
     , jose
     , microlens
     , monad-time
     , mtl
+    , openapi3
     , servant
     , servant-auth-server
+    , servant-openapi3
     , servant-server
     , text
     , time
@@ -61,13 +64,16 @@ test-suite servant-auth-firebase-test
     , firebase-jwk
     , hspec
     , http-types
+    , insert-ordered-containers
     , jose
     , microlens
     , monad-time
     , mtl
+    , openapi3
     , servant
     , servant-auth-firebase
     , servant-auth-server
+    , servant-openapi3
     , servant-server
     , text
     , time

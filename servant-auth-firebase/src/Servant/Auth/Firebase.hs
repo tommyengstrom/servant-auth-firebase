@@ -12,10 +12,22 @@ import Data.Aeson.KeyMap qualified as KM
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
 import Data.Char (isUpper, toLower)
+import Data.HashMap.Strict.InsOrd qualified as HM
 import Data.Kind
 import Data.List (foldl')
 import Data.Map qualified as M
 import Data.Maybe
+import Data.OpenApi
+    ( Components (..)
+    , HttpSchemeType (..)
+    , OpenApi (..)
+    , SecurityDefinitions (..)
+    , SecurityRequirement (..)
+    , SecurityScheme (..)
+    , SecuritySchemeType (..)
+    , allOperations
+    , security
+    )
 import Data.Text (Text)
 import Data.Text qualified as T
 import Firebase.JWK.Store qualified as FB
@@ -25,6 +37,7 @@ import Network.HTTP.Types
 import Network.Wai qualified as Wai
 import Servant
 import Servant.Auth.Server (ThrowAll (..))
+import Servant.OpenApi
 import Servant.Server.Internal.Delayed (Delayed (..), addAuthCheck)
 import Servant.Server.Internal.DelayedIO (DelayedIO, withRequest)
 import Servant.Server.Internal.Router (Router)
@@ -48,7 +61,6 @@ mkFirebaseVerificationSettings projectId = do
             }
 
 data FirebaseAuth (user :: Type)
-data FirebaseJWT
 
 data VerifiedClaims a = VerifiedClaims
     { iss :: Maybe JWT.StringOrURI
@@ -176,3 +188,46 @@ getAuthorizationToken headers = do
         guard $ headerName == "authorization"
         pure v
     BS.stripPrefix "Bearer " rawAuthHeaderValue
+
+instance HasOpenApi api => HasOpenApi (FirebaseAuth u :> api) where
+    toOpenApi Proxy = addSecurity $ toOpenApi $ Proxy @api
+      where
+        addSecurity =
+            addSecurityRequirement identifier
+                . addSecurityScheme identifier securityScheme
+        identifier :: T.Text = "firebase"
+        securityScheme =
+            SecurityScheme
+                { _securitySchemeType = SecuritySchemeHttp $ HttpSchemeBearer $ Just "JWT"
+                , _securitySchemeDescription = Just "Bearer Authentication"
+                }
+        addSecurityScheme :: T.Text -> SecurityScheme -> OpenApi -> OpenApi
+        addSecurityScheme securityIdentifier securityScheme openApi =
+            openApi
+                { _openApiComponents =
+                    (_openApiComponents openApi)
+                        { _componentsSecuritySchemes =
+                            _componentsSecuritySchemes (_openApiComponents openApi)
+                                <> SecurityDefinitions (HM.singleton securityIdentifier securityScheme)
+                        }
+                }
+
+        addSecurityRequirement :: T.Text -> OpenApi -> OpenApi
+        addSecurityRequirement securityRequirement =
+            allOperations
+                . security
+                %~ ((SecurityRequirement $ HM.singleton securityRequirement []) :)
+
+--
+-- securityDefinitionsExample :: SecurityDefinitions
+-- securityDefinitionsExample = SecurityDefinitions
+--   [ ("api_key", SecurityScheme
+--       { _securitySchemeType = SecuritySchemeApiKey (ApiKeyParams "api_key" ApiKeyHeader)
+--       , _securitySchemeDescription = Nothing })
+--   , ("firebase", SecurityScheme
+--       { _securitySchemeType = SecuritySchemeOAuth2 (mempty & implicit ?~ OAuth2Flow
+--             { _oAuth2Params = OAuth2ImplicitFlow ""
+--             , _oAath2RefreshUrl = Nothing
+--             , _oAuth2Scopes = []
+--       , _securitySchemeDescription = Nothing })
+--       ]

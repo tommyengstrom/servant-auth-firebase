@@ -16,6 +16,9 @@ dependencies:
 - containers
 - servant-server
 - servant-auth-server
+- openapi3
+- servant-openapi3
+- insert-ordered-containers
 - text
 - microlens
 - wai

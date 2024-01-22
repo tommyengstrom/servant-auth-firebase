@@ -1,7 +1,7 @@
-resolver: lts-20.18
+resolver: lts-22.7
 packages:
 - servant-auth-firebase
 
 extra-deps:
   - git: https://github.com/tommyengstrom/firebase-jwk.git
-    commit: 99d905fc594f97f3ed620434a2994c54387f2ac7
+    commit: b7cbc592e172709172c7ff6c181f393a1905d1f5

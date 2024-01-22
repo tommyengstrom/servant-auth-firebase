@@ -3,7 +3,9 @@ module Servant.Auth.Firebase
     , ThrowAll (..)
     ) where
 
+import Control.Monad (guard)
 import Control.Monad.Except
+import Control.Monad.IO.Class (MonadIO (..))
 import Control.Monad.Time (MonadTime (..))
 import Crypto.JWT qualified as JWT
 import Data.Aeson

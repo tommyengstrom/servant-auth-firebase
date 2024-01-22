@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-deprecations #-}
+
 module Servant.Auth.Firebase
     ( module Servant.Auth.Firebase
     , ThrowAll (..)

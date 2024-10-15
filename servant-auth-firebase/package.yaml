@@ -8,74 +8,72 @@ category:            Web
 
 dependencies:
 - base >= 4.7 && < 5
-- bytestring
-- firebase-jwk
-- http-types
-- servant
-- aeson
-- containers
-- servant-server
-- servant-auth-server
-- openapi3
-- servant-openapi3
-- insert-ordered-containers
-- text
-- microlens
-- wai
-- time
-- warp
-- mtl
-- jose
-- monad-time
 
+language:  GHC2021
 default-extensions:
-      ImportQualifiedPost
-      InstanceSigs
-      DataKinds
-      DefaultSignatures
-      DeriveAnyClass
-      DeriveFoldable
-      DeriveFunctor
-      DeriveGeneric
-      DeriveTraversable
-      DerivingStrategies
-      DerivingVia
-      DuplicateRecordFields
-      FlexibleContexts
-      FlexibleInstances
-      FunctionalDependencies
-      GADTs
-      GeneralizedNewtypeDeriving
-      LambdaCase
-      MultiParamTypeClasses
-      NoImplicitPrelude
-      NamedFieldPuns
-      OverloadedLabels
-      OverloadedStrings
-      RankNTypes
-      ScopedTypeVariables
-      StandaloneDeriving
-      TupleSections
-      TypeApplications
-      TypeFamilies
-      TypeOperators
-      ViewPatterns
+- BlockArguments
+- DataKinds
+- DefaultSignatures
+- DeriveAnyClass
+- DerivingStrategies
+- DerivingVia
+- DuplicateRecordFields
+- EmptyCase
+- FunctionalDependencies
+- GADTs
+- GeneralizedNewtypeDeriving
+- ImportQualifiedPost
+- LambdaCase
+- NamedFieldPuns
+- NoImplicitPrelude
+- OverloadedLabels
+- OverloadedStrings
+- RankNTypes
+- StrictData
+- TupleSections
+- TypeFamilies
+- ViewPatterns
+
 ghc-options:
+- -Weverything
 - -Werror
-- -Wall
-- -Wcompat
-- -Widentities
-- -Wincomplete-record-updates
-- -Wincomplete-uni-patterns
-- -Wpartial-fields
-- -Wredundant-constraints
-- -Wno-name-shadowing
-- -Wincomplete-record-updates
-- -Wincomplete-patterns
+- -Wno-all-missed-specialisations
+- -Wno-implicit-prelude
+- -Wno-missing-export-lists
+- -Wno-missing-import-lists
+- -Wno-missing-local-signatures
+- -Wno-missing-safe-haskell-mode
+- -Wno-prepositive-qualified-module
+- -Wno-safe
+- -Wno-unsafe
+- -Wno-missing-kind-signatures
+- -Wno-monomorphism-restriction
 
 library:
   source-dirs: src
-
+  dependencies:
+  - bytestring
+  - firebase-jwk
+  - http-types
+  - servant
+  - aeson
+  - containers
+  - servant-server
+  - servant-client
+  - servant-client-core
+  - servant-auth-server
+  - openapi3
+  - servant-openapi3
+  - insert-ordered-containers
+  - text
+  - microlens
+  - wai
+  - mtl
+  - jose
+  - rio
+  - http-client-tls
+  - generic-lens
+  - monad-time
 tests:
   servant-auth-firebase-test:
     main:                Spec.hs
@@ -87,3 +85,10 @@ tests:
     dependencies:
     - servant-auth-firebase
     - hspec
+    - servant-server
+    - warp
+    - time
+    - text
+    - bytestring
+    - mtl
+    - monad-time

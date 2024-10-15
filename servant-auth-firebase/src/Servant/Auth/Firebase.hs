@@ -19,6 +19,7 @@ import Data.Char (isUpper, toLower)
 import Data.HashMap.Strict.InsOrd qualified as HM
 import Data.Kind
 import Data.List (foldl')
+import GHC.Word (Word8)
 import Data.Map qualified as M
 import Data.Maybe
 import Data.OpenApi
@@ -51,7 +52,7 @@ data FirebaseSettings = FirebaseSettings
     { jwkSet :: JWT.JWKSet
     , validationSettings :: JWT.JWTValidationSettings
     }
-    deriving (Generic)
+    deriving stock (Generic)
 
 type FirebaseProjectId = JWT.StringOrURI
 
@@ -76,7 +77,7 @@ data VerifiedClaims a = VerifiedClaims
     , jti :: Maybe T.Text
     , content :: a
     }
-    deriving (Show, Eq, Generic)
+    deriving stock (Show, Eq, Generic)
 
 data FirebaseUser = FirebaseUser
     { name :: Text
@@ -84,7 +85,7 @@ data FirebaseUser = FirebaseUser
     , email :: Text
     , emailVerified :: Bool
     }
-    deriving (Show, Eq, Generic)
+    deriving stock (Show, Eq, Generic)
 
 jsonOptions :: Options
 jsonOptions =
@@ -103,7 +104,7 @@ instance FromJSON FirebaseUser where
 data FirebaseAuthResult user
     = Authenticated user
     | AuthenticationFailure Text
-    deriving (Show, Eq, Generic)
+    deriving stock (Show, Eq, Generic)
 
 instance ThrowAll (FirebaseAuthResult user) where
     throwAll = AuthenticationFailure . T.pack . show
@@ -162,14 +163,14 @@ checkFirebaseToken FirebaseSettings{jwkSet, validationSettings} tok = do
         JWT.verifyClaims validationSettings jwkSet jwt
     case verificationResult of
         Right claims -> do
-            let object :: Value
-                object =
+            let obj :: Value
+                obj =
                     claims
                         ^. JWT.unregisteredClaims
                             . to (M.mapKeys Key.fromText)
                             . to KM.fromMap
                             . to Object
-            pure $ case fromJSON object of
+            pure $ case fromJSON obj of
                 Success u -> Authenticated u
                 Error err ->
                     AuthenticationFailure $
@@ -186,12 +187,25 @@ checkFirebaseToken FirebaseSettings{jwkSet, validationSettings} tok = do
             JWT.JWTIssuedAtFuture -> AuthenticationFailure "IssuedAtFuture"
 
 getAuthorizationToken :: RequestHeaders -> Maybe BS.ByteString
-getAuthorizationToken headers = do
-    rawAuthHeaderValue <- listToMaybe $ do
-        (headerName, v) <- headers
-        guard $ headerName == "authorization"
-        pure v
-    BS.stripPrefix "Bearer " rawAuthHeaderValue
+getAuthorizationToken headers = listToMaybe $ fromAuthHeader <> fromCookie
+    where
+        fromAuthHeader :: [BS.ByteString]
+        fromAuthHeader = do
+            (headerName, v) <- headers
+            guard $ headerName == "authorization"
+            maybeToList $ BS.stripPrefix "Bearer " v
+
+        fromCookie :: [BS.ByteString]
+        fromCookie = do
+            (headerName, v) <- headers
+            guard $ headerName == "cookie"
+            cookie <- BS.split (charToWord8 ';') v
+            let (cookieName, cookieValue) = BS.break (== charToWord8 '=') cookie
+            guard $ cookieName == "authorization"
+            pure $ BS.drop 1 cookieValue
+
+charToWord8 :: Char -> Word8
+charToWord8 = fromIntegral . fromEnum
 
 instance HasOpenApi api => HasOpenApi (FirebaseAuth u :> api) where
     toOpenApi Proxy = addSecurity $ toOpenApi $ Proxy @api
@@ -206,13 +220,13 @@ instance HasOpenApi api => HasOpenApi (FirebaseAuth u :> api) where
                 , _securitySchemeDescription = Just "Bearer Authentication"
                 }
         addSecurityScheme :: T.Text -> SecurityScheme -> OpenApi -> OpenApi
-        addSecurityScheme securityIdentifier securityScheme openApi =
+        addSecurityScheme securityIdentifier scheme openApi =
             openApi
                 { _openApiComponents =
                     (_openApiComponents openApi)
                         { _componentsSecuritySchemes =
                             _componentsSecuritySchemes (_openApiComponents openApi)
-                                <> SecurityDefinitions (HM.singleton securityIdentifier securityScheme)
+                                <> SecurityDefinitions (HM.singleton securityIdentifier scheme)
                         }
                 }
 

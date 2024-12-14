@@ -15,9 +15,23 @@ packages:
   original:
     commit: b7cbc592e172709172c7ff6c181f393a1905d1f5
     git: https://github.com/tommyengstrom/firebase-jwk.git
+- completed:
+    hackage: x509-1.7.7@sha256:90eef2d745a654146fc1c325e035eaddac531e4d2145d4bc1dcf4b8fad439d34,2276
+    pantry-tree:
+      sha256: d81ffd09633c0417bcedbfc29f870cc843ec0750edd2f73c8fd60a5e5df278d2
+      size: 1124
+  original:
+    hackage: x509-1.7.7@sha256:90eef2d745a654146fc1c325e035eaddac531e4d2145d4bc1dcf4b8fad439d34,2276
+- completed:
+    hackage: x509-store-1.6.9@sha256:1f1abeab5bacf1407b920d0f34f4c35a5ad450ff0d8121cd3dc76460f81e711d,1716
+    pantry-tree:
+      sha256: 9fc5a6a997af3569c79d5062534cc9836721b39df86bef56308f209164ab500d
+      size: 398
+  original:
+    hackage: x509-store-1.6.9@sha256:1f1abeab5bacf1407b920d0f34f4c35a5ad450ff0d8121cd3dc76460f81e711d,1716
 snapshots:
 - completed:
-    sha256: 7b975b104cb3dbf0c297dfd01f936a4d2ee523241dd0b1ae960522b833fe3027
-    size: 714096
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/7.yaml
-  original: lts-22.7
+    sha256: 9444fadfa30b67a93080254d53872478c087592ad64443e47c546cdcd13149ae
+    size: 678857
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/23/0.yaml
+  original: lts-23.0

@@ -47,7 +47,9 @@ ghc-options:
 - -Wno-safe
 - -Wno-unsafe
 - -Wno-missing-kind-signatures
+- -Wno-missing-poly-kind-signatures
 - -Wno-monomorphism-restriction
+- -Wno-missing-role-annotations
 
 library:
   source-dirs: src

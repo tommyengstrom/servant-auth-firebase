@@ -43,7 +43,7 @@ library
       TupleSections
       TypeFamilies
       ViewPatterns
-  ghc-options: -Weverything -Werror -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missing-export-lists -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -Wno-missing-kind-signatures -Wno-monomorphism-restriction
+  ghc-options: -Weverything -Werror -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missing-export-lists -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-monomorphism-restriction -Wno-missing-role-annotations
   build-depends:
       aeson
     , base >=4.7 && <5
@@ -101,7 +101,7 @@ test-suite servant-auth-firebase-test
       TupleSections
       TypeFamilies
       ViewPatterns
-  ghc-options: -Weverything -Werror -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missing-export-lists -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -Wno-missing-kind-signatures -Wno-monomorphism-restriction -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Weverything -Werror -Wno-all-missed-specialisations -Wno-implicit-prelude -Wno-missing-export-lists -Wno-missing-import-lists -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-monomorphism-restriction -Wno-missing-role-annotations -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , bytestring

@@ -4,9 +4,7 @@ packages:
 
 extra-deps:
   - git: https://github.com/tommyengstrom/firebase-jwk.git
-    commit: b7cbc592e172709172c7ff6c181f393a1905d1f5
-  - x509-1.7.7@sha256:90eef2d745a654146fc1c325e035eaddac531e4d2145d4bc1dcf4b8fad439d34,2276
-  - x509-store-1.6.9@sha256:1f1abeab5bacf1407b920d0f34f4c35a5ad450ff0d8121cd3dc76460f81e711d,1716
+    commit: 91492d180aac22e7be84457ba7f39892916b78b7
   - servant-auth-server-0.4.9.0@sha256:81bf73638d2a47c629bbadf9f212319a901073682e51b1ca6bf27dec27de7b6a,5547
   - servant-openapi3-2.0.1.6@sha256:228b7f17fa3602a4b5c4a7e79cd50a476b3e11619138e79ad0fa089b731a153e,4999        
   - data-default-class-0.1.2.2@sha256:51400ed341ec87e86a4acf83301c6890e1fc67708e2d0ac519d48e0a14f54c15,1309

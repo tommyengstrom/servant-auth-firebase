@@ -5,30 +5,16 @@
 
 packages:
 - completed:
-    commit: b7cbc592e172709172c7ff6c181f393a1905d1f5
+    commit: 91492d180aac22e7be84457ba7f39892916b78b7
     git: https://github.com/tommyengstrom/firebase-jwk.git
     name: firebase-jwk
     pantry-tree:
-      sha256: f0ebfe202c3e04416639eb73db28eb5400346e354bbf10af23fc0927eb7a0b11
+      sha256: ad971ef2cbb88bf12d52e4c5e64ee6cfbaa1a0685efa4b3649b7a7b40b95b745
       size: 1147
     version: 0.1.3.0
   original:
-    commit: b7cbc592e172709172c7ff6c181f393a1905d1f5
+    commit: 91492d180aac22e7be84457ba7f39892916b78b7
     git: https://github.com/tommyengstrom/firebase-jwk.git
-- completed:
-    hackage: x509-1.7.7@sha256:90eef2d745a654146fc1c325e035eaddac531e4d2145d4bc1dcf4b8fad439d34,2276
-    pantry-tree:
-      sha256: d81ffd09633c0417bcedbfc29f870cc843ec0750edd2f73c8fd60a5e5df278d2
-      size: 1124
-  original:
-    hackage: x509-1.7.7@sha256:90eef2d745a654146fc1c325e035eaddac531e4d2145d4bc1dcf4b8fad439d34,2276
-- completed:
-    hackage: x509-store-1.6.9@sha256:1f1abeab5bacf1407b920d0f34f4c35a5ad450ff0d8121cd3dc76460f81e711d,1716
-    pantry-tree:
-      sha256: 9fc5a6a997af3569c79d5062534cc9836721b39df86bef56308f209164ab500d
-      size: 398
-  original:
-    hackage: x509-store-1.6.9@sha256:1f1abeab5bacf1407b920d0f34f4c35a5ad450ff0d8121cd3dc76460f81e711d,1716
 - completed:
     hackage: servant-auth-server-0.4.9.0@sha256:81bf73638d2a47c629bbadf9f212319a901073682e51b1ca6bf27dec27de7b6a,5547
     pantry-tree:

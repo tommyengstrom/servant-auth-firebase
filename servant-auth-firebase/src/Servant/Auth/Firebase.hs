@@ -18,7 +18,6 @@ import Data.ByteString.Lazy qualified as BL
 import Data.Char (isUpper, toLower)
 import Data.HashMap.Strict.InsOrd qualified as HM
 import Data.Kind
-import Data.List (foldl')
 import GHC.Word (Word8)
 import Data.Map qualified as M
 import Data.Maybe
@@ -81,6 +80,7 @@ data VerifiedClaims a = VerifiedClaims
 
 data FirebaseUser = FirebaseUser
     { name :: Text
+    , picture :: Maybe Text
     , userId :: Text
     , email :: Text
     , emailVerified :: Bool

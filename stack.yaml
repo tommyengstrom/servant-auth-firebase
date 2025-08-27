@@ -1,11 +1,8 @@
-resolver: nightly-2025-06-18
+resolver: lts-24.7
 packages:
 - servant-auth-firebase
 
 extra-deps:
   - git: https://github.com/tommyengstrom/firebase-jwk.git
-    commit: 91492d180aac22e7be84457ba7f39892916b78b7
-  - servant-auth-server-0.4.9.0@sha256:81bf73638d2a47c629bbadf9f212319a901073682e51b1ca6bf27dec27de7b6a,5547
-  - servant-openapi3-2.0.1.6@sha256:228b7f17fa3602a4b5c4a7e79cd50a476b3e11619138e79ad0fa089b731a153e,4999        
-  - data-default-class-0.1.2.2@sha256:51400ed341ec87e86a4acf83301c6890e1fc67708e2d0ac519d48e0a14f54c15,1309
+    commit: 2999f17608b734ebbdcb3d7ea334721d9e28e553
 system-ghc: true

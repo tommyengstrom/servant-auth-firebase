@@ -5,19 +5,19 @@
 
 packages:
 - completed:
-    commit: 2999f17608b734ebbdcb3d7ea334721d9e28e553
+    commit: d0219844e9c179357f85306842f74e8e5f870490
     git: https://github.com/tommyengstrom/firebase-jwk.git
     name: firebase-jwk
     pantry-tree:
-      sha256: b1213a15a8b675867435bb1d423b9d2e21f3ff709eb3ba719a698146e6b951ea
+      sha256: 84f9270e12e500aa5012d60fbd3f82f0be3007fa500f4f2f5c6f7e79765df1a7
       size: 1147
     version: 0.1.3.0
   original:
-    commit: 2999f17608b734ebbdcb3d7ea334721d9e28e553
+    commit: d0219844e9c179357f85306842f74e8e5f870490
     git: https://github.com/tommyengstrom/firebase-jwk.git
 snapshots:
 - completed:
-    sha256: b63fde5242c7a5d20e9c8070190038c5589424dabb8f8c7f02ec4b2be743ad23
-    size: 726276
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/24/7.yaml
-  original: lts-24.7
+    sha256: 0d0bb681dd5be9b930c8fc070d717aae757b9aed176ae6047d87624b46406816
+    size: 726097
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/24/12.yaml
+  original: lts-24.12

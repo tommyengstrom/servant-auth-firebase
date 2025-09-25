@@ -72,7 +72,6 @@ library:
   - wai
   - mtl
   - jose
-  - rio
   - http-client-tls
   - generic-lens
   - monad-time

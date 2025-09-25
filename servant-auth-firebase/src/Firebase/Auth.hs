@@ -5,80 +5,12 @@ import Data.Aeson
 import Servant.Client
 import Data.Generics.Labels ()
 import Servant.Client.Generic
-import RIO
+import Prelude
+import Data.Text (Text)
+import GHC.Generics (Generic)
 import Network.HTTP.Client.TLS (getGlobalManager)
+import Lens.Micro
 
-
--- The Connector provides data required to make calls to the Firebase
--- endpoints.
---data Connector = Connector
---    { cSecureTokenPubKeys :: Conc.MVar (H.HashMap Text JWT.JWK)
---    , cApiKey :: ByteString
---    }
---
---mkConnector :: (MonadIO m) => ByteString -> m Connector
---mkConnector apiKey = do
---    keyStore <- Conc.newMVar H.empty
---    return $ Connector keyStore apiKey
-
--- A data type for errors when calling the Firebase APIs.
---data ApiErr
---    = -- | A JSON parsing error - if this
---      -- is returned, please report a bug.
---      AEJSONParseErr Text
---    | -- | An error returned by the
---      -- Firebase endpoint. The @Status@
---      -- is the HTTP error code and the
---      -- @Value@ is a raw JSON
---      -- representation of the error
---      -- details.
---      AEApiErr Status Value
---    deriving (Eq, Show)
---
----- The simplest way to call the Firebase APIs provided in this
----- module. Use this if your application does not already have a Monad
----- Transformer stack.
---runIO :: Connector -> ReaderT Connector IO a -> IO a
---runIO = flip runReaderT
---
---setApiKey :: (MonadReader Connector m) => Request -> m Request
---setApiKey r = do
---    key <- asks cApiKey
---    let q = getRequestQueryString r
---    return $ setRequestQueryString (("key", Just key) : q) r
---
---execRequest ::
---    (ToJSON a, MonadReader Connector m, MonadIO m, FromJSON b) =>
---    [Char] ->
---    a ->
---    m (Either ApiErr b)
---execRequest url body = execRequestWithHeader url body []
---
---execRequestWithHeader ::
---    ( ToJSON a
---    , MonadReader Connector m
---    , MonadIO m
---    , FromJSON b
---    ) =>
---    [Char] ->
---    a ->
---    [Header] ->
---    m (Either ApiErr b)
---execRequestWithHeader url body hs = do
---    let r1 = setRequestBodyJSON body $ parseRequest_ url
---        r2 = foldr (\(a, b) -> setRequestHeader a [b]) r1 hs
---    req <- setApiKey r2
---    resp <- httpBS req
---    return $ parseResponse resp
---
---parseResponse :: (FromJSON a) => Response ByteString -> Either ApiErr a
---parseResponse resp = do
---     let st = getResponseStatus resp :: Status
---         body = getResponseBody resp :: ByteString
---     when (st /= status200) $ Left $ AEApiErr st (String $ decodeUtf8 body)
---     case eitherDecodeStrict body of
---        Right v -> Right v
---        Left err -> Left $ AEJSONParseErr $ toS err <> " -  " <> decodeUtf8 body
 
 data LoginResponse = LoginResponse
     { kind :: Text
